@@ -1,0 +1,6 @@
+[submodule "PokemonGo-Map"]
+	path = PokemonGo-Map
+	url = https://github.com/PokemonGoMap/PokemonGo-Map.git
+[submodule "ptc-acc-gen"]
+	path = ptc-acc-gen
+	url = https://github.com/FrostTheFox/ptc-acc-gen.git
