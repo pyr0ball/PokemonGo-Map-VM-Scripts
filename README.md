@@ -9,4 +9,5 @@ Preliminary set of instructions:
 http://pokemongo-map.me/viewtopic.php?f=20&t=22
 
 Username: pogomapuser
+
 password: password    #it's advisable to change this after you get your map set up!
