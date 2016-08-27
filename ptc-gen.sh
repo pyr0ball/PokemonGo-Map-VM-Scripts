@@ -42,6 +42,6 @@ sed -i s/END_NUM/$end/g index.js
 node index.js
 cd PogoPlayer
 node pogo.js
-mv accounts.csv ~/PokemonGo-Map/config/accounts.$(date +"%Y%m%d%H%M").csv
-echo Your accounts have been generated and saved to ~/PokemonGo-Map/config/accounts.$(date +"%Y%m%d%H%M").csv
+mv accounts.csv ../PokemonGo-Map/config/accounts.$(date +"%Y%m%d%H%M").csv
+echo Your accounts have been generated and saved to ../PokemonGo-Map/config/accounts.$(date +"%Y%m%d%H%M").csv
 sleep 10
