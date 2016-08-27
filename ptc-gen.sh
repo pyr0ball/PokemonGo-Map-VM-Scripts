@@ -28,7 +28,7 @@ echo creating accounts named $username using pass $password registered to $euser
 echo Accounts will be activated at the location $lat , $lon
 sleep 5
 
-cd ~/ptc-acc-gen
+cd ptc-acc-gen
 mv index.js index.js.$(date +"%Y%m%d%H%M").old
 scp index.js.original index.js
 sed -i s/USERNAME_PH/$username/g index.js
