@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ~/PokemonGo-Map
+cd PokemonGo-Map
 ## configurations ##
 
 # Account configs
