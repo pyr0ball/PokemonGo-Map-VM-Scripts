@@ -10,7 +10,8 @@ git status
 #look for conflicts before pull
 ### will create more stuff here later ###
 git stash
-git pull origin develop
+git checkout develop
+git pull
 git stash pop
 
 sudo -H pip install -r requirements.txt --upgrade
