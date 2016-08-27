@@ -8,6 +8,8 @@ if [ "$ver" != "v0.2.3" ] ; then
 	git stash
 	git pull origin master
 	git stash pop
+	echo VM-Scripts updated to $ver! The Map Updater will now re-run
+	sleep 5
 	sh ./update-map.sh
 else
 	cd PokemonGo-Map
