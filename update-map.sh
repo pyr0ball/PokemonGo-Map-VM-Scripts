@@ -5,19 +5,20 @@
 git checkout .version
 ver=$(cat .version)
 if [ "$ver" != "v0.2.3" ] ; then
-	git stash
-	git pull origin master
-	git stash pop
+	git stash > update-script.log
+	git pull origin master > update-script.log
+	git stash pop > update-script.log
 	echo VM-Scripts updated to $ver! The Map Updater will now re-run
 	sleep 5
 	sh ./update-map.sh
 else
 	cd PokemonGo-Map
+	echo Now Updating PokemonGo-Map
 	#git pull map files, merge end-user changes
-	git stash
-	git checkout develop
-	git pull
-	git stash pop
+	git stash > ../update-script.log
+	git checkout develop > ../update-script.log
+	git pull > ../update-script.log
+	git stash pop > ../update-script.log
 	
 	#run install steps on map
 	sudo -H pip install -r requirements.txt --upgrade
@@ -25,9 +26,10 @@ else
 	sudo npm run build
 	
 	#git pull ptc-gen-files
+	echo Now updating ptc-acc-gen
 	cd ../ptc-acc-gen
-	git stash
-	git checkout master
-	git pull
-	git stash pop
+	git stash > ../update-script.log
+	git checkout master > ../update-script.log
+	git pull > ../update-script.log
+	git stash pop > ../update-script.log
 fi
