@@ -2,7 +2,7 @@
 git stash
 git pull origin master
 git stash pop
-cd ~/PokemonGo-Map
+cd PokemonGo-Map
 
 #check current installation's status
 git status
