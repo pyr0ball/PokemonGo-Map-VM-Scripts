@@ -4,3 +4,6 @@
 [submodule "ptc-acc-gen"]
 	path = ptc-acc-gen
 	url = https://github.com/FrostTheFox/ptc-acc-gen.git
+[submodule "PoGoAccountCheck"]
+	path = PoGoAccountCheck
+	url = https://github.com/a-moss/PoGoAccountCheck.git
