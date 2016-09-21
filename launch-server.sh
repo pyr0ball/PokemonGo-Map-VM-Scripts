@@ -10,20 +10,22 @@ beeaccts=config/beehive.csv
 
 # server configuration
 locale=en
-location="some, location"
-#workers="-w 20"
-#searchint="-asi 7200"
-#restint="-ari 7200"
-#spawnpoints="-ss"
-scandelay="-sd 30"
-logindelay="-ld 15"
-loginretry="-lr 3"
-maxfail="-mf 3"
-jitter="-j"
-steps=7
+location="Santa Monica Pier"
+
+# Worker Management:
+#workers="-w 20"		| # Maximum numnber of active accounts at one time
+#searchint="-asi 7200"	| # Maximum search time before account "rest"
+#restint="-ari 7200"	| # Minimum "rest" time before cycling account into queue
+#spawnpoints="-ss"		| # Uncomment to enable Spawnpoint Scanning
+scandelay="-sd 30"		| # Time each worker will wait before scanning next cell
+logindelay="-ld 15"		| # Wait period between login attempts after failure
+loginretry="-lr 3"		| # Number of login retries before abandoning account
+maxfail="-mf 3"			| # Max number of consecutive failed scans before account is disabled from search queue
+jitter="-j"				| # Uncomment to enable "jitter" in location. (Makes detection of account as mapper more difficult)
+steps=7					| # Radius of Search Area in "Steps" (~70 meters)
 GAPI=INSERT_gMAPS_apiKEyHERE
 executable=runserver.py
-#logfile="-vv pogomap.log"
+#logfile="-v pogomap.log" | # Uncomment to enable output to log
 
 # Database configuration (MySQL / MariaDB is strongly recommended)
 dbtype="--db-type mysql"
@@ -31,7 +33,8 @@ dbname="--db-name pogom"
 dbuser="--db-user pogom"
 dbpass="--db-pass pogom"
 dbhost="--db-host localhost"
-dbcon="--db-max_connections 100"
+#dbcon="--db-max_connections 100"	| # Uncomment and increase max connections if you get an error like "not enough db connections
+#dbthr="--db-threads 50"	| # Uncomment and increase db threads if db I/O complains of falling behind
 
 # Webserver configuration
 host=0.0.0.0
@@ -41,20 +44,20 @@ port=5000
 #webhookth="--wh-threads 2"
 
 # Scan Parsing Config
-#nopokes="-np"
-#nogyms="-ng"
-#nopstops="-nk"
-#gyminfo="-gi"
+#nopokes="-np"		| # Uncomment to disable scanning for pokemon
+#nogyms="-ng"		| # Uncomment to disable scanning Gyms
+#nopstops="-nk"		| # Uncomment to disable scanning pokestops
+#gyminfo="-gi"		| # Uncomment to enable scanning Gym Information
+
+#############################################################
+#					End of Configuration 					#
+#############################################################
+
 
 ## Magic csv parsing ##
-auth=$(while IFS="," read -r value1 remainder; do echo -a $value1 | tr '\n' ' ' ; done < "$mainaccts")
-username=$(while IFS="," read -r value1 value2 remainder; do echo -u $value2 | tr '\n' ' ' ; done < "$mainaccts")
-password=$(while IFS="," read -r value1 value2 value3 remainder; do echo -p $value3 | tr '\n' ' ' ; done < "$mainaccts")
+maincsv="-ac $mainaccts"
 
-
-beeauth=$(while IFS="," read -r value1 remainder; do echo -a $value1 | tr '\n' ' ' ; done < "$beeaccts")
-beehive=$(while IFS="," read -r value1 value2 remainder; do echo -u $value2 | tr '\n' ' ' ; done < "$beeaccts")
-beepass=$(while IFS="," read -r value1 value2 value3 remainder; do echo -p $value3 | tr '\n' ' ' ; done < "$beeaccts")
+beecsv="-ac $beeaccts"
 
 
 #Uncomment the "while" loop to set the server to restart the map process every 4 hours
@@ -65,7 +68,7 @@ beepass=$(while IFS="," read -r value1 value2 value3 remainder; do echo -p $valu
 	pkill -f runserver.py
 #               nohup proxychains4 python $executible -os  "$location" $dbtype $dbname $dbuser $dbpass $dbhost $dbcon -k $GAPI -H $host -P $port &
 
-python $executable $auth $username $password -l "$location" -H $host -P $port -st $steps -k $GAPI -L $locale $thread $scandelay $logindelay $loginretry $maxfail $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $jitter $webhooks $webhookth $nopokes $nogyms $nopstops $gyminfo $searchint $restint $workers $logfile $spawnpoints -ps -vv debug.log
+python $executable $maincsv -l "$location" -H $host -P $port -st $steps -k $GAPI -L $locale $thread $scandelay $logindelay $loginretry $maxfail $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $jitter $webhooks $webhookth $nopokes $nogyms $nopstops $gyminfo $searchint $restint $workers $logfile $spawnpoints -ps -vv debug.log
 	if [ "$?" -eq "1" ] ; then
 		echo Something went wrong on launch. Please check Map Configuration...
 		sleep 15
@@ -79,17 +82,17 @@ python $executable $auth $username $password -l "$location" -H $host -P $port -s
 # Uncomment the lines below to use beehive workers. Use them as examples, copy and paste new ones for as many as you may need. The current set is enough workers for one ring/leap
 	### ~Beehive Workers~###
 	 sleep 2
-#	 nohup python $executable $beeauth $beehive $beepass -l "37.784765, -122.294005" -dc -st 7 -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
+#	 nohup python $executable $beecsv -l "37.784765, -122.294005" -dc -st 7 -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
 	# sleep 2
-# nohup  python $executable $beeauth $beehive $beepass -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
+# nohup  python $executable $beecsv -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
 	# sleep 2
-	# nohup  python $executable $beeauth $beehive $beepass -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
+	# nohup  python $executable $beecsv -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
 	# sleep 2
-	# nohup  python $executable $beeauth $beehive $beepass -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
+	# nohup  python $executable $beecsv -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
 	# sleep 2
-	# nohup  python $executable $beeauth $beehive $beepass -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
+	# nohup  python $executable $beecsv -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
 	# sleep 2
-	# nohup  python $executable $beeauth $beehive $beepass -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
+	# nohup  python $executable $beecsv -l "REPLACE_ME" -dc -st $steps -k $GAPI -L $locale $thread $scandelay $dbtype $dbname $dbuser $dbpass $dbhost $dbcon $proxy $nopokes $nogyms $nopstops $gyminfo $jitter $logindelay $loginretry $maxfail -ns &
 #                sleep 14400
 #        done
 

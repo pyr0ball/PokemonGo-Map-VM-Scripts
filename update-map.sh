@@ -1,10 +1,10 @@
 #!/bin/bash
-#PokemonGo-Map-VM Update Script v0.2.5
+#PokemonGo-Map-VM Update Script v0.2.6
 cwd=$(pwd)
 ## Check current version against master on gitHub. Run update on VM scripts if version mismatch
 git checkout .version
 ver=$(cat .version)
-if [ "$ver" != "v0.2.5" ] ; then
+if [ "$ver" != "v0.2.6" ] ; then
 	git stash > update-script.log
 	git pull origin master > update-script.log
 	git stash pop > update-script.log
